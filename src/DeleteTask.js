@@ -39,6 +39,7 @@ function DeleteTask({ onSuccess }) {
       await Promise.all(selectedTasks.map((taskId) => axios.delete(`/tasks/${taskId}`)));
       console.log('Tasks deleted successfully');
       onSuccess(); // Invoke the onSuccess callback to notify the parent component
+      refreshPage(); // Refresh the page after successful deletion
     } catch (error) {
       console.error('Error deleting tasks:', error);
     } finally {
@@ -46,22 +47,40 @@ function DeleteTask({ onSuccess }) {
     }
   };
 
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
   return (
-    <div>
-      <p>Available Tasks:</p>
-      <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>
-            <input
-              type="checkbox"
-              id={task.id}
-              checked={selectedTasks.includes(task.id)}
-              onChange={() => handleCheckboxChange(task.id)}
-            />
-            <label htmlFor={task.id}>{task.name}</label>
-          </li>
-        ))}
-      </ul>
+    <div className="table-container">
+      <h2>Available Tasks</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Task Name</th>
+            <th>Task Status</th>
+            <th>Date Created</th>
+            <th>Select</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((task) => (
+            <tr key={task.id}>
+              <td>{task.name}</td>
+              <td>{task.status}</td>
+              <td>{task.createdAt}</td>
+              <td>
+                <input
+                  type="checkbox"
+                  id={task.id}
+                  checked={selectedTasks.includes(task.id)}
+                  onChange={() => handleCheckboxChange(task.id)}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <button onClick={handleDelete} disabled={isDeleting || selectedTasks.length === 0}>
         {isDeleting ? 'Deleting...' : 'Delete Selected'}
       </button>
