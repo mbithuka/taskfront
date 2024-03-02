@@ -17,6 +17,11 @@ function CreateTask() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Check if taskName and taskDescription are not empty
+    if (formData.taskName.trim() === '' || formData.taskDescription.trim() === '') {
+      console.error('Task name and description cannot be empty');
+      return;
+    }
     try {
       await axios.post('/tasks', {
         name: formData.taskName,
@@ -32,7 +37,6 @@ function CreateTask() {
       console.error('Error creating task:', error);
     }
   };
-
   return (
     <div className="form-container">
       <h2>Create Task</h2>
